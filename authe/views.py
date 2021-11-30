@@ -24,6 +24,7 @@ def signup(request):
                 salt = bcrypt.gensalt()
                 hash = bcrypt.hashpw(password.encode('utf-8'), salt)
                 user = User(email=email, password=hash, created_at=timezone.now())
+                print(user)
                 user.save()
                 data = {"status": "success", "message": "user signed up"}
                 JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")

@@ -1,6 +1,9 @@
 # enviroment variable
 .env
 
+# sqlite3 database
+db.sqlite3
+
 # python's virtual environment
 bin
 include

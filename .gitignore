@@ -1,0 +1,11 @@
+## python's virtual environment
+bin
+include
+pyvenv.cfg
+lib
+
+# python's distribution & package
+__pycache__
+*.pyc
+*.log
+*.pot

@@ -1,4 +1,7 @@
-## python's virtual environment
+# enviroment variable
+.env
+
+# python's virtual environment
 bin
 include
 pyvenv.cfg

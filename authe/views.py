@@ -6,6 +6,7 @@ import json
 from django.utils import timezone
 import os
 import bcrypt
+from django.core import serializers
 
 @csrf_exempt
 def signup(request):
@@ -16,7 +17,7 @@ def signup(request):
             password = body["password"]
 
             is_user = User.objects.filter(email=email).exists()
-
+            print(User.objects.all())
             if is_user:
                 data = {"status": "error", "message": "user already exists"}
                 return HttpResponseBadRequest(json.dumps(data), content_type="application/json")
@@ -24,12 +25,21 @@ def signup(request):
                 salt = bcrypt.gensalt()
                 hash = bcrypt.hashpw(password.encode('utf-8'), salt)
                 user = User(email=email, password=hash, created_at=timezone.now())
-                print(user)
                 user.save()
                 data = {"status": "success", "message": "user signed up"}
                 JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
                 print(JWT_SECRET_KEY)
                 return HttpResponse(json.dumps(data), content_type="application/json")
+    except Exception as e:
+        data = {"status": "error", "message": str(e)}
+        return HttpResponseServerError(json.dumps(data), content_type="application/json")
+
+def users(request):
+    try:
+        if request.method == "GET":
+            users = json.loads(serializers.serialize("json", User.objects.all()))
+            data = {"status": "success", "message": "found users",  "data": users}
+            return HttpResponse(json.dumps(data), content_type="application/json")
     except Exception as e:
         data = {"status": "error", "message": str(e)}
         return HttpResponseServerError(json.dumps(data), content_type="application/json")

@@ -102,3 +102,11 @@ def users(request):
         return HttpResponseServerError(json.dumps(data), content_type="application/json")
 
 ### social signup / login
+### signout
+### admin (settings.py)
+### map (class view, postgresql gis, jwt)
+### refresh token (redis)
+### test code
+### lint
+### docker
+### swagger

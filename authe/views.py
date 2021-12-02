@@ -8,8 +8,41 @@ import os
 import bcrypt
 from django.core import serializers
 from datetime import datetime, timedelta
+from rest_framework.decorators import api_view
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
+
 
 @csrf_exempt
+# @swaggger_auto_schema document
+# https://drf-yasg.readthedocs.io/en/stable/drf_yasg.html#drf_yasg.utils.swagger_auto_schema
+# drf_yasgs.openapi document
+# https://drf-yasg.readthedocs.io/en/stable/drf_yasg.html#module-drf_yasg.openapi
+@swagger_auto_schema(
+    tags=["auth"],
+    operation_summary="sign up",
+    operation_description="sign up with email, password",
+    method="post",
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            "email": openapi.Schema(type=openapi.TYPE_STRING, description="string"),
+            "password": openapi.Schema(type=openapi.TYPE_STRING, description="string"),
+        },
+    ),
+    responses={
+        200: openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "status": openapi.Schema(type=openapi.TYPE_STRING, description="success"),
+                "message": openapi.Schema(type=openapi.TYPE_STRING, description="user signed up")
+            },
+        )
+    },
+    deprecated=False
+)
+@api_view(["POST"])
 def signup(request):
     try:
         if request.method == "POST":
@@ -27,7 +60,7 @@ def signup(request):
             print(hash, hash.decode("utf-8"))
             user = User(email=email, password=hash.decode("utf-8"), created_at=timezone.now())
             user.save()
-            data = {"status": "success", "message": "user signed up"}
+            data = { "status": "success", "message": "user signed up" }
             JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
             return HttpResponse(json.dumps(data), content_type="application/json")
     except Exception as e:
@@ -75,10 +108,17 @@ def signin(request):
         data = { "status": "error", "message": str(e) }
         return HttpResponseServerError(json.dumps(data), content_type="application/json")
 
+@swagger_auto_schema(
+    method="get",
+    operation_summary="find all users",
+    operation_description="find all users' email and created_at",
+    tags=["auth"]
+)
+@api_view(["GET"])
 def users(request):
     try:
         if request.method == "GET":
-            case = 1
+            case = 3
             if case == 1:
                 # queryest -> json #1
                 users = json.loads(serializers.serialize("json", User.objects.all()))
@@ -110,3 +150,5 @@ def users(request):
 ### lint
 ### docker
 ### swagger
+### django rest frame work
+### serializer

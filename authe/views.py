@@ -69,7 +69,6 @@ def signup(request):
 
             salt = bcrypt.gensalt()
             hash = bcrypt.hashpw(password.encode("utf-8"), salt)
-            print(hash, hash.decode("utf-8"))
             user = User(email=email, password=hash.decode("utf-8"), created_at=timezone.now())
             user.save()
             data = { "status": "success", "message": "user signed up" }
@@ -207,6 +206,89 @@ def users(request):
         data = { "status": "error", "message": str(e) }
         return HttpResponseServerError(json.dumps(data), content_type="application/json")
 
+@csrf_exempt
+@swagger_auto_schema(
+    tags=["auth"],
+    operation_summary="change password",
+    operation_description="change in new password",
+    method="patch",
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        require=["email", "password"],
+        properties={
+            "email": openapi.Schema(type=openapi.TYPE_STRING, require=True, default="abcde@gmail.com", description="email"),
+            "current_password": openapi.Schema(type=openapi.TYPE_STRING, require=True, default="qwerasdf", description="current password"),
+            "new_password": openapi.Schema(type=openapi.TYPE_STRING, require=True, default="qwerasdf1", description="new password"),
+        },
+    ),
+    responses={
+        200: openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: success)"),
+                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: changed password)")
+            },
+        ),
+        400: openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: error)"),
+                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: user does not exist, password is invalid, password is same")
+            },
+        ),
+        500: openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: error)"),
+                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: internal server error)")
+            },
+        )
+    },
+    deprecated=False
+)
+@api_view(["PATCH"])
+def password(request):
+    # token에서 정보얻어오는걸로 바꾸기
+    try:
+        if request.method == "PATCH":
+            body = json.loads(request.body)
+            email = body["email"]
+            current_password = body["current_password"]
+            new_password = body["new_password"]
+
+            # get으로 바꾸기
+            user = User.objects.filter(email=email)
+            is_user = user.exists()
+            if not is_user:
+                data = { "status": "error", "message": "user does not exist" }
+                return HttpResponseBadRequest(json.dumps(data), content_type="application/json")
+
+            hashed = user.values("password").first()["password"]
+            is_match = bcrypt.checkpw(current_password.encode("utf-8"), hashed.encode("utf-8"))
+            if not is_match:
+                data = { "status": "error", "message": "password is invalid" }
+                return HttpResponseBadRequest(json.dumps(data), content_type="application/json")
+
+            hashed = user.values("password").first()["password"]
+            is_match = bcrypt.checkpw(new_password.encode("utf-8"), hashed.encode("utf-8"))
+            if is_match:
+                data = { "status": "error", "message": "password is same" }
+                return HttpResponseBadRequest(json.dumps(data), content_type="application/json")
+
+            salt = bcrypt.gensalt()
+            hash = bcrypt.hashpw(new_password.encode("utf-8"), salt)
+            user = User.objects.get(email=email)
+            user.password = hash.decode("utf-8")
+            user.save()
+
+            data = {
+                "status": "success",
+                "message": "password changed",
+            }
+            return HttpResponse(json.dumps(data), content_type="application/json")
+    except Exception as e:
+        data = { "status": "error", "message": str(e) }
+        return HttpResponseServerError(json.dumps(data), content_type="application/json")
 ### social signup / login
 ### signout
 ### admin (settings.py)

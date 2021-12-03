@@ -1,4 +1,4 @@
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError, response
 from django.views.decorators.csrf import csrf_exempt
 import jwt
 from .models import User
@@ -8,7 +8,8 @@ import os
 import bcrypt
 from django.core import serializers
 from datetime import datetime, timedelta
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, parser_classes
+from rest_framework.parsers import FormParser
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
@@ -24,31 +25,42 @@ from drf_yasg import openapi
     operation_summary="sign up",
     operation_description="sign up with email, password",
     method="post",
-    request_body=openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-        properties={
-            "email": openapi.Schema(type=openapi.TYPE_STRING, description="string"),
-            "password": openapi.Schema(type=openapi.TYPE_STRING, description="string"),
-        },
-    ),
+    manual_parameters=[
+        openapi.Parameter("email", openapi.IN_FORM, type=openapi.TYPE_STRING, required=True, default="abcde@gmail.com", description="email"),
+        openapi.Parameter("password", openapi.IN_FORM, type=openapi.TYPE_STRING, required=True, default="qwerasdf", description="password"),
+    ],
     responses={
         200: openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="success"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="user signed up")
+                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: success)"),
+                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: user signed up)")
+            },
+        ),
+        400: openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: error)"),
+                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: user already exists)")
+            },
+        ),
+        500: openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: error)"),
+                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: internal server error)")
             },
         )
     },
     deprecated=False
 )
 @api_view(["POST"])
+@parser_classes([FormParser])
 def signup(request):
     try:
         if request.method == "POST":
-            body = json.loads(request.body)
-            email = body["email"]
-            password = body["password"]
+            email = request.POST["email"]
+            password = request.POST["password"]
 
             is_user = User.objects.filter(email=email).exists()
             if is_user:
@@ -68,11 +80,58 @@ def signup(request):
         return HttpResponseServerError(json.dumps(data), content_type="application/json")
 
 @csrf_exempt
+@swagger_auto_schema(
+    tags=["auth"],
+    operation_summary="sign in",
+    operation_description="sign in with email, password",
+    method="post",
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        require=["email", "password"],
+        properties={
+            "email": openapi.Schema(type=openapi.TYPE_STRING, require=True, default="abcde@gmail.com", description="email"),
+            "password": openapi.Schema(type=openapi.TYPE_STRING, require=True, default="qwerasdf", description="password"),
+        },
+    ),
+    responses={
+        200: openapi.Response(
+            description="sigin success",
+            examples={
+                "application/json": {
+                    "status": "success",
+                    "message": "user signed in",
+                    "access_token": "access token"
+                }
+            },
+        ),
+        400: openapi.Response(
+            description="sigin success",
+            examples={
+                "application/json": {
+                    "status": "error",
+                    "message": "password is invalid"
+                }
+            },
+        ),
+        500: openapi.Response(
+            description="sigin success",
+            examples={
+                "application/json": {
+                    "status": "error",
+                    "message": "error message"
+                }
+            },
+        )
+    },
+    deprecated=False
+)
+@api_view(["POST"])
 def signin(request):
     try:
         if request.method == "POST":
-            email = request.POST["email"]
-            password = request.POST["password"]
+            body = json.loads(request.body)
+            email = body["email"]
+            password = body["password"]
 
             user = User.objects.filter(email=email)
             is_user = user.exists()
@@ -112,7 +171,12 @@ def signin(request):
     method="get",
     operation_summary="find all users",
     operation_description="find all users' email and created_at",
-    tags=["auth"]
+    tags=["auth"],
+    responses={
+        200: "success",
+        500: "internal server error"
+    },
+    deprecated=False
 )
 @api_view(["GET"])
 def users(request):
@@ -126,6 +190,8 @@ def users(request):
                 return HttpResponse(json.dumps(data), content_type="application/json")
             elif case == 2:
                 # queryest -> json #2
+                # values document
+                # https://docs.djangoproject.com/en/3.2/ref/models/querysets/#values
                 users = User.objects.all().values("email")
                 data = { "status": "success", "message": "found users",  "data": list(users) }
                 return HttpResponse(json.dumps(data), content_type="application/json")
@@ -149,6 +215,5 @@ def users(request):
 ### test code
 ### lint
 ### docker
-### swagger
 ### django rest frame work
 ### serializer

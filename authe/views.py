@@ -1,19 +1,14 @@
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
 from django.views.decorators.csrf import csrf_exempt
-import jwt
+from django.utils import timezone
+from django.core import serializers
 from .models import User
 import json
-from django.utils import timezone
-import os
-import bcrypt
-from django.core import serializers
-from datetime import datetime, timedelta
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import FormParser
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-
-
+from config.utils import create_token, create_hash, get_is_match_password
 
 @csrf_exempt
 # @swaggger_auto_schema document
@@ -67,12 +62,17 @@ def signup(request):
                 data = { "status": "error", "message": "user already exists" }
                 return HttpResponseBadRequest(json.dumps(data), content_type="application/json")
 
-            salt = bcrypt.gensalt()
-            hash = bcrypt.hashpw(password.encode("utf-8"), salt)
-            user = User(email=email, password=hash.decode("utf-8"), created_at=timezone.now())
+            hash = create_hash(password)
+            user = User(email=email, password=hash, created_at=timezone.now())
             user.save()
-            data = { "status": "success", "message": "user signed up" }
-            JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
+
+            access_token = create_token(email)
+
+            data = {
+                "status": "success",
+                "message": "user signed up",
+                "access_token": access_token
+            }
             return HttpResponse(json.dumps(data), content_type="application/json")
     except Exception as e:
         data = { "status": "error", "message": str(e) }
@@ -141,21 +141,12 @@ def signin(request):
                 return HttpResponseBadRequest(json.dumps(data), content_type="application/json")
 
             hashed = user.values("password").first()["password"]
-            is_match = bcrypt.checkpw(password.encode("utf-8"), hashed.encode("utf-8"))
+            is_match = get_is_match_password(password, hashed)
             if not is_match:
                 data = { "status": "error", "message": "password is invalid" }
                 return HttpResponseBadRequest(json.dumps(data), content_type="application/json")
 
-            JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
-            access_token = jwt.encode(
-                {
-                    "email": email,
-                    "iat": datetime.utcnow(),
-                    "exp": datetime.utcnow() + timedelta(days=14)
-                },
-                JWT_SECRET_KEY,
-                algorithm="HS256"
-            )
+            access_token = create_token(email)
 
             data = {
                 "status": "success",
@@ -263,21 +254,21 @@ def password(request):
                 return HttpResponseBadRequest(json.dumps(data), content_type="application/json")
 
             hashed = user.values("password").first()["password"]
-            is_match = bcrypt.checkpw(current_password.encode("utf-8"), hashed.encode("utf-8"))
+            is_match = get_is_match_password(current_password, hashed)
             if not is_match:
                 data = { "status": "error", "message": "password is invalid" }
                 return HttpResponseBadRequest(json.dumps(data), content_type="application/json")
 
             hashed = user.values("password").first()["password"]
-            is_match = bcrypt.checkpw(new_password.encode("utf-8"), hashed.encode("utf-8"))
+            is_match = get_is_match_password(new_password, hashed)
             if is_match:
                 data = { "status": "error", "message": "password is same" }
                 return HttpResponseBadRequest(json.dumps(data), content_type="application/json")
 
-            salt = bcrypt.gensalt()
-            hash = bcrypt.hashpw(new_password.encode("utf-8"), salt)
+            hash = create_hash(new_password)
+
             user = User.objects.get(email=email)
-            user.password = hash.decode("utf-8")
+            user.password = hash
             user.save()
 
             data = {
@@ -344,7 +335,7 @@ def signout(request):
                 return HttpResponseBadRequest(json.dumps(data), content_type="application/json")
 
             hashed = user.values("password").first()["password"]
-            is_match = bcrypt.checkpw(password.encode("utf-8"), hashed.encode("utf-8"))
+            is_match = get_is_match_password(password, hashed)
             if not is_match:
                 data = { "status": "error", "message": "password is invalid" }
                 return HttpResponseBadRequest(json.dumps(data), content_type="application/json")

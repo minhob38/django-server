@@ -181,7 +181,6 @@ def signin(request):
 def users(request):
     try:
         if request.method == "GET":
-            print(request.user_info)
             case = 3
             if case == 1:
                 # queryest -> json #1
@@ -373,3 +372,4 @@ def signout(request):
 ### function middleware
 ### class middleware (map, response formatting)
 ### swagger authentication
+### swagger ""comment

@@ -181,6 +181,7 @@ def signin(request):
 def users(request):
     try:
         if request.method == "GET":
+            print(request.user_info)
             case = 3
             if case == 1:
                 # queryest -> json #1
@@ -214,9 +215,8 @@ def users(request):
     method="patch",
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
-        require=["email", "password"],
+        require=["current_password", "new_password"],
         properties={
-            "email": openapi.Schema(type=openapi.TYPE_STRING, require=True, default="abcde@gmail.com", description="email"),
             "current_password": openapi.Schema(type=openapi.TYPE_STRING, require=True, default="qwerasdf", description="current password"),
             "new_password": openapi.Schema(type=openapi.TYPE_STRING, require=True, default="qwerasdf1", description="new password"),
         },
@@ -248,11 +248,10 @@ def users(request):
 )
 @api_view(["PATCH"])
 def password(request):
-    # token에서 email 받아오는걸로 바꾸기
     try:
         if request.method == "PATCH":
+            email = request.user_info["email"]
             body = json.loads(request.body)
-            email = body["email"]
             current_password = body["current_password"]
             new_password = body["new_password"]
 
@@ -298,10 +297,9 @@ def password(request):
     method="delete",
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
-        require=["email", "password"],
+        require=["password"],
         properties={
-            "email": openapi.Schema(type=openapi.TYPE_STRING, require=True, default="abcde@gmail.com", description="email"),
-            "password": openapi.Schema(type=openapi.TYPE_STRING, require=True, default="qwerasdf", description="password"),
+            "password": openapi.Schema(type=openapi.TYPE_STRING, require=True, default="qwerasdf", description="password")
         },
     ),
     responses={
@@ -334,8 +332,8 @@ def signout(request):
     # token에서 정보얻어오는걸로 바꾸기
     try:
         if request.method == "DELETE":
+            email = request.user_info["email"]
             body = json.loads(request.body)
-            email = body["email"]
             password = body["password"]
 
             # get으로 바꾸기
@@ -372,3 +370,6 @@ def signout(request):
 ### docker
 ### django rest frame work
 ### serializer
+### function middleware
+### class middleware (map, response formatting)
+### swagger authentication

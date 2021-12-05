@@ -13,5 +13,3 @@ class SeoulSgg(models.Model):
         managed = False
         db_table = 'seoul_sgg'
         app_label = 'postgresql'
-
-

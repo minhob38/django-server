@@ -8,3 +8,8 @@ class User(models.Model):
 
     def __str__(self):
         return f'type:{type(self)}) id:{self.id} email:{self.email} password:{self.password} created_at:{self.created_at}'
+
+    class Meta:
+        managed = False
+        db_table = 'authe_user'
+        # app_label = 'default'으로하면, default database에서 table이 삭제됨

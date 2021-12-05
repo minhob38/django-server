@@ -42,5 +42,6 @@ urlpatterns = [
 
     # api route
     path('admin/', admin.site.urls),
-    path("api/auth/", include("authe.urls"))
+    path("api/auth/", include("authe.urls")),
+    path("api/map/", include("map.urls"))
 ]

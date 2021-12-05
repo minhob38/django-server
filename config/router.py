@@ -2,6 +2,7 @@ class Router:
     route_app_labels = ["postgresql"]
 
     def db_for_read(self, model, **hints):
+        print(model._meta.app_label)
         if model._meta.app_label in self.route_app_labels:
             return "_meta.app_label"
         return None

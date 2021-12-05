@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -76,6 +77,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+
+"""
+해당 app의 model을 실행할때, [app 이름].[router 파일].[router 클래스]의 router를 호출,
+project(config)의 router는 root이기 때문에, app과 관계없이 매번 router가 호출됨
+"""
 DATABASE_ROUTERS = [
     'config.router.Router'
 ]
@@ -87,11 +93,11 @@ DATABASES = {
     },
     'postgresql': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'study',
-        'USER': 'postgres',
-        'PASSWORD': 'qlalfqjsgh',
-        'HOST': 'localhost',
-        'PORT': 5432
+        'NAME': os.environ.get("POSTGRESQL_NAME"),
+        'USER': os.environ.get("POSTGRESQL_USER"),
+        'PASSWORD': os.environ.get("POSTGRESQL_PASSWORD"),
+        'HOST': os.environ.get("POSTGRESQL_HOST"),
+        'PORT': os.environ.get("POSTGRESQL_PORT")
     }
 }
 

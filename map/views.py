@@ -6,7 +6,12 @@ from .models import SeoulSgg
 
 class MapView(View):
     def get(self, request):
-        seoul_sgg = SeoulSgg.objects.all()
+        # seoul_sgg = SeoulSgg.objects.all()
+        seoul_sgg = SeoulSgg.objects.raw("SELECT * FROM SEOUL_SGG")
+
+        for s in seoul_sgg:
+            print(s)
+
         print(seoul_sgg)
         data = {
             "status": "success",

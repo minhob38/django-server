@@ -320,7 +320,6 @@ def password(request):
 )
 @api_view(["DELETE"])
 def signout(request):
-    # token에서 정보얻어오는걸로 바꾸기
     try:
         if request.method == "DELETE":
             email = request.user_info["email"]

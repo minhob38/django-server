@@ -5,12 +5,12 @@
 본서버는 인증 API `api/auth`와 지도 API `api/map`으로 이루어져 있습니다.
 
 ### • auth api
-인증 API(signup, signin, signout 등)이며 아래 stack으로 만들어져 있습니다.
+인증 API(signup, signin, signout 등)이며 아래 stack으로 만들어져 있습니다.  
 \- function based view  
 \- function middleware  
 
 ### • map api
-지도 API이며 아래 stack으로 만들어져 있습니다.
+지도 API이며 아래 stack으로 만들어져 있습니다.  
 \- class based view  
 
 ### 📔 API Document

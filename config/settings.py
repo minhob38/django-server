@@ -37,8 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "drf_yasg",
-    'authe'
+    'drf_yasg',
+    'authe',
+    'map'
 ]
 
 MIDDLEWARE = [
@@ -75,11 +76,22 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+DATABASES_ROUTERS = [
+    'config.router.Router'
+]
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    },
+    'postgresql': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'study',
+        'USER': 'postgres',
+        'PASSWORD': 'qlalfqjsgh',
+        'HOST': 'localhost',
+        'PORT': 5432
     }
 }
 

@@ -350,17 +350,3 @@ def signout(request):
     except Exception as e:
         data = { "status": "error", "message": str(e) }
         return HttpResponseServerError(json.dumps(data), content_type="application/json")
-
-### social signup / login
-### admin (settings.py)
-### map (class view, postgresql gis, jwt)
-### refresh token (redis)
-### test code
-### lint
-### docker
-### django rest frame work
-### serializer
-### function middleware
-### class middleware (map, response formatting)
-### swagger authentication
-### swagger ""comment

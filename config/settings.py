@@ -76,9 +76,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-DATABASES_ROUTERS = [
-    'config.router.Router',
-    'authe.router.Router'
+DATABASE_ROUTERS = [
+    'config.router.Router'
 ]
 
 DATABASES = {

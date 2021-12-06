@@ -10,6 +10,6 @@ class User(models.Model):
         return f'type:{type(self)}) id:{self.id} email:{self.email} password:{self.password} created_at:{self.created_at}'
 
     class Meta:
-        managed = False
+        managed = True # True : django가 table을 생성/삭제할 수 있음
         db_table = 'authe_user'
         # app_label = 'default'으로하면, default database에서 table이 삭제됨

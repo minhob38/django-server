@@ -31,3 +31,6 @@ api 요청/응답은 swagger를 기반으로 문서화되어 있습니다.
 - serializer
 - class middleware (map, response formatting)
 - swagger ""comment
+- json response
+- api view, APIVIEW, mixin, viewset
+- 1) 모든 sgg 행조회 (serializer, apivew), 2)해당동 행조회 3)해당 경계 동들 조회 4)면적순조회 5)해당점을 포함하는 동조회

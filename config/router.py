@@ -7,7 +7,6 @@ class Router:
 
     def db_for_read(self, model, **hints):
         # print("db for read")
-        print(model._meta.app_label)
         if model._meta.app_label in self.route_app_labels:
             return model._meta.app_label
         return None

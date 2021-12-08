@@ -9,7 +9,6 @@ from .serializers import SeoulSggSerializer
 
 class MapView(APIView):
     def get(self, request):
-
         seoul_sgg = SeoulSgg.objects.raw("SELECT gid, st_astext(geom) as geom_text FROM SEOUL_SGG")
         serializer = SeoulSggSerializer(seoul_sgg, many=True)
 

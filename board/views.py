@@ -12,6 +12,20 @@ from .serializers import PostsSerializer
 
 # 게시판 관리 (전체 조회 / 전체 삭제)
 class BoardView(APIView): #mixed in으로 바꾸기
+    def get(self, request):
+        try:
+            serializer = PostsSerializer(Posts.objects.all(), many=True)
+            data = {
+                "status": "success",
+                "message": "found all posts",
+                "data": serializer.data
+            }
+            # https://docs.djangoproject.com/en/3.2/ref/request-response/#jsonresponse-objects
+            return JsonResponse(data, status=200, content_type="application/json")
+        except Exception as e:
+            data = { "status": "success", "message": str(e) }
+            return JsonResponse(data, status=500, content_type="application/json")
+
     def post(self, request):
         try:
             # https://www.django-rest-framework.org/api-guide/serializers/
@@ -27,20 +41,6 @@ class BoardView(APIView): #mixed in으로 바꾸기
         except Exception as e:
             data = { "status": "error", "message": str(e) }
             return HttpResponseServerError(json.dumps(data), content_type="application/json")
-
-    def get(self, request):
-        try:
-            serializer = PostsSerializer(Posts.objects.all(), many=True)
-            data = {
-                "status": "success",
-                "message": "found all posts",
-                "data": serializer.data
-            }
-            # https://docs.djangoproject.com/en/3.2/ref/request-response/#jsonresponse-objects
-            return JsonResponse(data, status=200, content_type="application/json")
-        except Exception as e:
-            data = { "status": "success", "message": str(e) }
-            return JsonResponse(data, status=500, content_type="application/json")
 
     def delete(self, request):
         try:
@@ -70,3 +70,18 @@ class PostView(APIView):
         except Exception as e:
             data = { "status": "success", "message": str(e) }
         return Response(data, status=500, content_type="application/json")
+
+    def patch(self, request, post_id):
+        try:
+            serializer = PostsSerializer(Posts.objects.filter(id=post_id).first(), data=request.POST)
+
+            if serializer.is_valid():
+                serializer.save()
+                data = { "status": "success", "message": "edited post" }
+                return Response(data, status=201)
+
+            data = { "status": "success", "message": "bad request" }
+            return Response(data, content_type="application/json")
+        except Exception as e:
+            data = { "status": "error", "message": str(e) }
+            return Response(data, content_type="application/json")

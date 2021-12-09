@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from django import views
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError, JsonResponse
 from django.views import View
 import json
 from .models import Posts
@@ -14,6 +14,7 @@ from .serializers import PostsSerializer
 class BoardView(APIView): #mixed in으로 바꾸기
     def post(self, request):
         try:
+            # https://www.django-rest-framework.org/api-guide/serializers/
             serializer = PostsSerializer(data=request.POST)
 
             if serializer.is_valid():
@@ -35,10 +36,11 @@ class BoardView(APIView): #mixed in으로 바꾸기
                 "message": "found all posts",
                 "data": serializer.data
             }
-            return Response(data, status=200, content_type="application/json")
+            # https://docs.djangoproject.com/en/3.2/ref/request-response/#jsonresponse-objects
+            return JsonResponse(data, status=200, content_type="application/json")
         except Exception as e:
             data = { "status": "success", "message": str(e) }
-            return Response(data, status=500, content_type="application/json")
+            return JsonResponse(data, status=500, content_type="application/json")
 
     def delete(self, request):
         try:
@@ -48,7 +50,23 @@ class BoardView(APIView): #mixed in으로 바꾸기
                 "status": "success",
                 "message": "deleted all posts",
             }
+            # https://www.django-rest-framework.org/api-guide/responses/
             return Response(data, status=200, content_type="application/json")
         except Exception as e:
             data = { "status": "success", "message": str(e) }
             return Response(data, status=500, content_type="application/json")
+
+class PostView(APIView):
+    def get(self, request, post_id):
+        try:
+            # ↓ 아래와 같음, serializer = PostsSerializer(Posts.objects.get(id=post_id), many=False)
+            serializer = PostsSerializer(Posts.objects.filter(id=post_id).first(), many=False)
+            data = {
+                "status": "success",
+                "message": "found post",
+                "data": serializer.data
+            }
+            return Response(data, status=200, content_type="application/json")
+        except Exception as e:
+            data = { "status": "success", "message": str(e) }
+        return Response(data, status=500, content_type="application/json")

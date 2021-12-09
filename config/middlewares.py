@@ -9,6 +9,7 @@ def check_access_token_middleware(get_response):
         try:
             # before view
             if request.path == "/api/auth/password/" and "/api/auth/delete/":
+                # https://docs.djangoproject.com/en/3.2/ref/request-response/#httprequest-objects
                 access_token = request.headers.get("AUTHORIZATION")
 
                 if not access_token: raise PermissionDenied("no authorization token")

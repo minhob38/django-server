@@ -76,7 +76,6 @@ def signup(request):
             return HttpResponse(json.dumps(data), content_type="application/json")
     except Exception as e:
         data = { "status": "error", "message": str(e) }
-        print(e)
         return HttpResponseServerError(json.dumps(data), content_type="application/json")
 
 @csrf_exempt

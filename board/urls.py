@@ -1,6 +1,6 @@
 from django.urls import path
-from map.views import MapView
+from board.views import BoardView
 
 urlpatterns = [
-    path("posts/", MapView.as_view())
+    path("posts/", BoardView.as_view())
 ]

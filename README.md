@@ -37,3 +37,4 @@ api 요청/응답은 swagger를 기반으로 문서화되어 있습니다.
 - orm이 아닌 raw sql을 사용하면, serializer는 안쓰는게 좋을듯
 - serverless (gcp, aws)
 - board api
+- 보안

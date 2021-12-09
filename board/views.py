@@ -40,8 +40,15 @@ class BoardView(APIView): #mixed in으로 바꾸기
             data = { "status": "success", "message": str(e) }
             return Response(data, status=500, content_type="application/json")
 
-
-        # data = { "status": "success", "message": "post created" }
-        # return HttpResponseBadRequest(json.dumps(data), content_type="application/json")
-
-# class PostView()
+    def delete(self, request):
+        try:
+            posts = Posts.objects.all()
+            posts.delete()
+            data = {
+                "status": "success",
+                "message": "deleted all posts",
+            }
+            return Response(data, status=200, content_type="application/json")
+        except Exception as e:
+            data = { "status": "success", "message": str(e) }
+            return Response(data, status=500, content_type="application/json")

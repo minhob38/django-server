@@ -85,3 +85,14 @@ class PostView(APIView):
         except Exception as e:
             data = { "status": "error", "message": str(e) }
             return Response(data, content_type="application/json")
+
+    def delete(self, request, post_id):
+        try:
+            post = Posts.objects.filter(id=post_id).first()
+            post.delete()
+
+            data = { "status": "success", "message": "deleted post" }
+            return Response(data, status=201)
+        except Exception as e:
+            data = { "status": "error", "message": str(e) }
+            return Response(data, content_type="application/json")

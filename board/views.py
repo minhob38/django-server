@@ -87,6 +87,21 @@ class PostView(APIView):
             data = { "status": "error", "message": str(e) }
             return Response(data, status=500, content_type="application/json")
 
+    def put(self, request, post_id):
+        try:
+            serializer = PostsSerializer(Posts.objects.filter(id=post_id).first(), data=request.POST)
+
+            if serializer.is_valid():
+                serializer.save()
+                data = { "status": "success", "message": "changed post" }
+                return Response(data, status=201)
+
+            data = { "status": "error", "message": "bad request" }
+            return Response(data, status=400, content_type="application/json")
+        except Exception as e:
+            data = { "status": "error", "message": str(e) }
+            return Response(data, status=500, content_type="application/json")
+
     def delete(self, request, post_id):
         try:
             post = Posts.objects.filter(id=post_id).first()

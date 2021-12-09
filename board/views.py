@@ -73,18 +73,19 @@ class PostView(APIView):
 
     def patch(self, request, post_id):
         try:
-            serializer = PostsSerializer(Posts.objects.filter(id=post_id).first(), data=request.POST)
+            # https://www.django-rest-framework.org/api-guide/serializers/#partial-updates
+            serializer = PostsSerializer(Posts.objects.filter(id=post_id).first(), data=request.POST, partial=True)
 
             if serializer.is_valid():
                 serializer.save()
                 data = { "status": "success", "message": "edited post" }
                 return Response(data, status=201)
 
-            data = { "status": "success", "message": "bad request" }
-            return Response(data, content_type="application/json")
+            data = { "status": "error", "message": "bad request" }
+            return Response(data, status=400, content_type="application/json")
         except Exception as e:
             data = { "status": "error", "message": str(e) }
-            return Response(data, content_type="application/json")
+            return Response(data, status=500, content_type="application/json")
 
     def delete(self, request, post_id):
         try:
@@ -92,7 +93,7 @@ class PostView(APIView):
             post.delete()
 
             data = { "status": "success", "message": "deleted post" }
-            return Response(data, status=201)
+            return Response(data, status=200)
         except Exception as e:
             data = { "status": "error", "message": str(e) }
-            return Response(data, content_type="application/json")
+            return Response(data, status=500, content_type="application/json")

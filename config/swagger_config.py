@@ -2,42 +2,82 @@ from drf_yasg import openapi
 
 # https://drf-yasg.readthedocs.io/en/stable/drf_yasg.html?highlight=type_#module-drf_yasg.openapi
 
-class AuthSwaggerSchema():
+
+class AuthSwaggerSchema:
     post_signup_manual_parameters = [
-        openapi.Parameter("email", openapi.IN_FORM, type=openapi.TYPE_STRING, required=True, default="abcde@gmail.com", description="email"),
-        openapi.Parameter("password", openapi.IN_FORM, type=openapi.TYPE_STRING, required=True, default="qwerasdf", description="password"),
+        openapi.Parameter(
+            "email",
+            openapi.IN_FORM,
+            type=openapi.TYPE_STRING,
+            required=True,
+            default="abcde@gmail.com",
+            description="email",
+        ),
+        openapi.Parameter(
+            "password",
+            openapi.IN_FORM,
+            type=openapi.TYPE_STRING,
+            required=True,
+            default="qwerasdf",
+            description="password",
+        ),
     ]
 
     post_signup_responses = {
         200: openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: success)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: user signed up)")
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: success)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: user signed up)",
+                ),
             },
         ),
         400: openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: error)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: user already exists)")
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: error)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: user already exists)",
+                ),
             },
         ),
         500: openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: error)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: internal server error)")
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: error)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: internal server error)",
+                ),
             },
-        )
+        ),
     }
 
     post_signin_request_body = openapi.Schema(
         type=openapi.TYPE_OBJECT,
         require=["email", "password"],
         properties={
-            "email": openapi.Schema(type=openapi.TYPE_STRING, require=True, default="abcde@gmail.com", description="email"),
-            "password": openapi.Schema(type=openapi.TYPE_STRING, require=True, default="qwerasdf", description="password"),
+            "email": openapi.Schema(
+                type=openapi.TYPE_STRING,
+                require=True,
+                default="abcde@gmail.com",
+                description="email",
+            ),
+            "password": openapi.Schema(
+                type=openapi.TYPE_STRING,
+                require=True,
+                default="qwerasdf",
+                description="password",
+            ),
         },
     )
 
@@ -48,7 +88,7 @@ class AuthSwaggerSchema():
                 "application/json": {
                     "status": "success",
                     "message": "user signed in",
-                    "access_token": "access token"
+                    "access_token": "access token",
                 }
             },
         ),
@@ -57,64 +97,88 @@ class AuthSwaggerSchema():
             examples={
                 "application/json": {
                     "status": "error",
-                    "message": "password is invalid"
+                    "message": "password is invalid",
                 }
             },
         ),
         500: openapi.Response(
             description="sigin success",
             examples={
-                "application/json": {
-                    "status": "error",
-                    "message": "error message"
-                }
-            }
-        )
+                "application/json": {"status": "error", "message": "error message"}
+            },
+        ),
     }
 
-    get_users_responses = {
-        200: "success",
-        500: "internal server error"
-    }
+    get_users_responses = {200: "success", 500: "internal server error"}
 
     patch_password_request_body = openapi.Schema(
         type=openapi.TYPE_OBJECT,
         require=["current_password", "new_password"],
         properties={
-            "current_password": openapi.Schema(type=openapi.TYPE_STRING, require=True, default="qwerasdf", description="current password"),
-            "new_password": openapi.Schema(type=openapi.TYPE_STRING, require=True, default="qwerasdf1", description="new password"),
-        }
+            "current_password": openapi.Schema(
+                type=openapi.TYPE_STRING,
+                require=True,
+                default="qwerasdf",
+                description="current password",
+            ),
+            "new_password": openapi.Schema(
+                type=openapi.TYPE_STRING,
+                require=True,
+                default="qwerasdf1",
+                description="new password",
+            ),
+        },
     )
 
     patch_password_responses = {
         200: openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: success)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: changed password)")
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: success)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: changed password)",
+                ),
             },
         ),
         400: openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: error)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: user does not exist, password is invalid, password is same")
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: error)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: user does not exist, password is invalid, password is same",
+                ),
             },
         ),
         500: openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: error)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: internal server error)")
-            }
-        )
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: error)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: internal server error)",
+                ),
+            },
+        ),
     }
 
     delete_signout_request_body = openapi.Schema(
         type=openapi.TYPE_OBJECT,
         require=["password"],
         properties={
-            "password": openapi.Schema(type=openapi.TYPE_STRING, require=True, default="qwerasdf", description="password")
+            "password": openapi.Schema(
+                type=openapi.TYPE_STRING,
+                require=True,
+                default="qwerasdf",
+                description="password",
+            )
         },
     )
 
@@ -122,33 +186,54 @@ class AuthSwaggerSchema():
         200: openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: success)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: user signed out)")
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: success)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: user signed out)",
+                ),
             },
         ),
         400: openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: error)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: user does not exist, password is invalid")
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: error)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: user does not exist, password is invalid",
+                ),
             },
         ),
         500: openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: error)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: internal server error)")
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: error)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: internal server error)",
+                ),
             },
-        )
+        ),
     }
 
-class BoardSwaggerSchema():
+
+class BoardSwaggerSchema:
     get_posts_responses = {
         200: openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: success)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: found all posts)"),
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: success)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: found all posts)",
+                ),
                 "data": openapi.Schema(
                     type=openapi.TYPE_ARRAY,
                     items=openapi.Schema(
@@ -159,48 +244,75 @@ class BoardSwaggerSchema():
                             "title": openapi.Schema(type=openapi.TYPE_STRING),
                             "content": openapi.Schema(type=openapi.TYPE_STRING),
                             "created_at": openapi.Schema(type=openapi.TYPE_STRING),
-                            "updated_at": openapi.Schema(type=openapi.TYPE_STRING)
-                        }
-                    )
-                )
+                            "updated_at": openapi.Schema(type=openapi.TYPE_STRING),
+                        },
+                    ),
+                ),
             },
         ),
         500: openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: error)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: internal server error)")
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: error)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: internal server error)",
+                ),
             },
-        )
+        ),
     }
 
     delete_posts_responses = {
         200: openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: success)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: deleted all posts)")
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: success)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: deleted all posts)",
+                ),
             },
         ),
         500: openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: error)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: internal server error)")
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: error)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: internal server error)",
+                ),
             },
-        )
+        ),
     }
 
     get_posts_path_manual_parameters = [
-        openapi.Parameter("post_id", openapi.IN_PATH, type=openapi.TYPE_NUMBER, required=True, default="10", description="post id")
+        openapi.Parameter(
+            "post_id",
+            openapi.IN_PATH,
+            type=openapi.TYPE_NUMBER,
+            required=True,
+            default="10",
+            description="post id",
+        )
     ]
 
     get_posts_path_responses = {
         200: openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: success)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: found all posts)"),
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: success)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: found all posts)",
+                ),
                 "data": openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
@@ -209,67 +321,99 @@ class BoardSwaggerSchema():
                         "title": openapi.Schema(type=openapi.TYPE_STRING),
                         "content": openapi.Schema(type=openapi.TYPE_STRING),
                         "created_at": openapi.Schema(type=openapi.TYPE_STRING),
-                        "updated_at": openapi.Schema(type=openapi.TYPE_STRING)
-                    }
-                )
+                        "updated_at": openapi.Schema(type=openapi.TYPE_STRING),
+                    },
+                ),
             },
         ),
         500: openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: error)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: internal server error)")
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: error)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: internal server error)",
+                ),
             },
-        )
+        ),
     }
 
     patch_posts_path_responses = {
         200: openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: success)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: edited post)")
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: success)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="message (e.g: edited post)"
+                ),
             },
         ),
         500: openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: error)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: internal server error)")
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: error)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: internal server error)",
+                ),
             },
-        )
+        ),
     }
 
     put_posts_path_responses = {
         200: openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: success)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: edited post)")
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: success)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="message (e.g: edited post)"
+                ),
             },
         ),
         500: openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: error)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: internal server error)")
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: error)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: internal server error)",
+                ),
             },
-        )
+        ),
     }
 
     delete_posts_path_responses = {
         200: openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: success)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: deleted post)")
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: success)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="message (e.g: deleted post)"
+                ),
             },
         ),
         500: openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: error)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: internal server error)")
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: error)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: internal server error)",
+                ),
             },
-        )
+        ),
     }

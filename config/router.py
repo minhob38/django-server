@@ -3,6 +3,7 @@ class Router:
     - None이면 settings.py DATABASES의 default database로 연결
     - model에서 app_label정의하지 않으면, app_label은 app의 이름으로 할당
     """
+
     route_app_labels = ["postgresql"]
 
     def db_for_read(self, model, **hints):
@@ -20,8 +21,8 @@ class Router:
     def allow_relation(self, obj1, obj2, **hints):
         # print("allow relation")
         if (
-            obj1._meta.app_label in self.route_app_labels or
-            obj2._meta.app_label in self.route_app_labels
+            obj1._meta.app_label in self.route_app_labels
+            or obj2._meta.app_label in self.route_app_labels
         ):
             return True
         return None

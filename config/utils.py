@@ -7,22 +7,24 @@ import bcrypt
 
 JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
 
+
 def create_token(email):
     token = jwt.encode(
-                {
-                    "email": email,
-                    "iat": datetime.utcnow(),
-                    "exp": datetime.utcnow() + timedelta(days=14)
-                },
-                JWT_SECRET_KEY,
-                algorithm="HS256"
+        {
+            "email": email,
+            "iat": datetime.utcnow(),
+            "exp": datetime.utcnow() + timedelta(days=14),
+        },
+        JWT_SECRET_KEY,
+        algorithm="HS256",
     )
 
     return token
 
+
 def decode_bearer_token(bearer_token):
     try:
-        token = bearer_token[len("bearer "):]
+        token = bearer_token[len("bearer ") :]
         decode = jwt.decode(token, JWT_SECRET_KEY, algorithms="HS256")
     except DecodeError:
         raise PermissionDenied("token invalid")
@@ -31,11 +33,13 @@ def decode_bearer_token(bearer_token):
 
     return decode
 
+
 def create_hash(password):
     salt = bcrypt.gensalt()
     hash = bcrypt.hashpw(password.encode("utf-8"), salt)
     str_hash = hash.decode("utf-8")
     return str_hash
+
 
 def get_is_match_password(password, hash):
     is_match = bcrypt.checkpw(password.encode("utf-8"), hash.encode("utf-8"))

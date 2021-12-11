@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from .models import SeoulSgg
 
-class SeoulSggSerializer(serializers.ModelSerializer) :
+
+class SeoulSggSerializer(serializers.ModelSerializer):
     geom_text = serializers.CharField()
 
     class Meta:

@@ -2,17 +2,28 @@ from django.shortcuts import render
 
 # Create your views here.
 from django import views
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError, JsonResponse
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError, JsonResponse, request
 from django.views import View
 import json
 from .models import Posts
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import PostsSerializer
 
-# 게시판 관리 (전체 조회 / 전체 삭제)
+# 게시판 관리 (전체 조회 / 전체 삭제) - APIView 기반 CBV
 class BoardView(APIView): #mixed in으로 바꾸기
+    """
+    게시판 관리
+    ---
+    단일 게시글을 생성, 전체 게시글 조회/삭제합니다.
+    """
     def get(self, request):
+        """
+        전체 게시글 조회
+        ---
+        전체 게시글을 조회합니다.
+        """
         try:
             serializer = PostsSerializer(Posts.objects.all(), many=True)
             data = {
@@ -27,6 +38,11 @@ class BoardView(APIView): #mixed in으로 바꾸기
             return JsonResponse(data, status=500, content_type="application/json")
 
     def post(self, request):
+        """
+        단일 게시글 생성
+        ---
+        단일 게시글을 생성합니다.
+        """
         try:
             # https://www.django-rest-framework.org/api-guide/serializers/
             serializer = PostsSerializer(data=request.POST)
@@ -43,6 +59,11 @@ class BoardView(APIView): #mixed in으로 바꾸기
             return HttpResponseServerError(json.dumps(data), content_type="application/json")
 
     def delete(self, request):
+        """
+        전체 게시글 삭제
+        ---
+        전체 게시글을 삭제합니다.
+        """
         try:
             posts = Posts.objects.all()
             posts.delete()
@@ -56,6 +77,7 @@ class BoardView(APIView): #mixed in으로 바꾸기
             data = { "status": "success", "message": str(e) }
             return Response(data, status=500, content_type="application/json")
 
+# 게시글 관리 (단일 게시글 조회 / 수정 / 삭제) - APIView 기반 CBV
 class PostView(APIView):
     def get(self, request, post_id):
         try:
@@ -71,6 +93,7 @@ class PostView(APIView):
             data = { "status": "success", "message": str(e) }
         return Response(data, status=500, content_type="application/json")
 
+    @swagger_auto_schema(tags=["board"], request_body=PostsSerializer)
     def patch(self, request, post_id):
         try:
             # https://www.django-rest-framework.org/api-guide/serializers/#partial-updates
@@ -87,6 +110,7 @@ class PostView(APIView):
             data = { "status": "error", "message": str(e) }
             return Response(data, status=500, content_type="application/json")
 
+    @swagger_auto_schema(tags=["board"], request_body=PostsSerializer)
     def put(self, request, post_id):
         try:
             serializer = PostsSerializer(Posts.objects.filter(id=post_id).first(), data=request.POST)
@@ -112,3 +136,7 @@ class PostView(APIView):
         except Exception as e:
             data = { "status": "error", "message": str(e) }
             return Response(data, status=500, content_type="application/json")
+
+"""
+viewsets 기반 CBV
+"""

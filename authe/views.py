@@ -9,6 +9,7 @@ from rest_framework.parsers import FormParser
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from config.utils import create_token, create_hash, get_is_match_password
+from config.swagger_config import AuthSwaggerSchema
 
 @csrf_exempt
 # @swaggger_auto_schema document
@@ -20,33 +21,8 @@ from config.utils import create_token, create_hash, get_is_match_password
     operation_summary="sign up",
     operation_description="sign up with email, password",
     method="post",
-    manual_parameters=[
-        openapi.Parameter("email", openapi.IN_FORM, type=openapi.TYPE_STRING, required=True, default="abcde@gmail.com", description="email"),
-        openapi.Parameter("password", openapi.IN_FORM, type=openapi.TYPE_STRING, required=True, default="qwerasdf", description="password"),
-    ],
-    responses={
-        200: openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: success)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: user signed up)")
-            },
-        ),
-        400: openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: error)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: user already exists)")
-            },
-        ),
-        500: openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: error)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: internal server error)")
-            },
-        )
-    },
+    manual_parameters=AuthSwaggerSchema.post_signup_manual_parameters,
+    responses=AuthSwaggerSchema.post_signup_manual_responses,
     deprecated=False
 )
 @api_view(["POST"])
@@ -84,44 +60,8 @@ def signup(request):
     operation_summary="sign in",
     operation_description="sign in with email, password",
     method="post",
-    request_body=openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-        require=["email", "password"],
-        properties={
-            "email": openapi.Schema(type=openapi.TYPE_STRING, require=True, default="abcde@gmail.com", description="email"),
-            "password": openapi.Schema(type=openapi.TYPE_STRING, require=True, default="qwerasdf", description="password"),
-        },
-    ),
-    responses={
-        200: openapi.Response(
-            description="sigin success",
-            examples={
-                "application/json": {
-                    "status": "success",
-                    "message": "user signed in",
-                    "access_token": "access token"
-                }
-            },
-        ),
-        400: openapi.Response(
-            description="sigin success",
-            examples={
-                "application/json": {
-                    "status": "error",
-                    "message": "password is invalid"
-                }
-            },
-        ),
-        500: openapi.Response(
-            description="sigin success",
-            examples={
-                "application/json": {
-                    "status": "error",
-                    "message": "error message"
-                }
-            },
-        )
-    },
+    request_body=AuthSwaggerSchema.post_signin_request_body,
+    responses=AuthSwaggerSchema.post_signin_responses,
     deprecated=False
 )
 @api_view(["POST"])
@@ -162,10 +102,7 @@ def signin(request):
     operation_summary="find all users",
     operation_description="find all users' email and created_at",
     tags=["auth"],
-    responses={
-        200: "success",
-        500: "internal server error"
-    },
+    responses=AuthSwaggerSchema.get_users_responses,
     deprecated=False
 )
 @api_view(["GET"])
@@ -203,37 +140,8 @@ def users(request):
     operation_summary="change password",
     operation_description="change with new password",
     method="patch",
-    request_body=openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-        require=["current_password", "new_password"],
-        properties={
-            "current_password": openapi.Schema(type=openapi.TYPE_STRING, require=True, default="qwerasdf", description="current password"),
-            "new_password": openapi.Schema(type=openapi.TYPE_STRING, require=True, default="qwerasdf1", description="new password"),
-        },
-    ),
-    responses={
-        200: openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: success)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: changed password)")
-            },
-        ),
-        400: openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: error)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: user does not exist, password is invalid, password is same")
-            },
-        ),
-        500: openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: error)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: internal server error)")
-            },
-        )
-    },
+    request_body=AuthSwaggerSchema.patch_password_request_body,
+    responses=AuthSwaggerSchema.patch_password_responses,
     deprecated=False
 )
 @api_view(["PATCH"])
@@ -285,36 +193,8 @@ def password(request):
     operation_summary="sign out",
     operation_description="sign out with password",
     method="delete",
-    request_body=openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-        require=["password"],
-        properties={
-            "password": openapi.Schema(type=openapi.TYPE_STRING, require=True, default="qwerasdf", description="password")
-        },
-    ),
-    responses={
-        200: openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: success)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: user signed out)")
-            },
-        ),
-        400: openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: error)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: user does not exist, password is invalid")
-            },
-        ),
-        500: openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                "status": openapi.Schema(type=openapi.TYPE_STRING, description="status (e.g: error)"),
-                "message": openapi.Schema(type=openapi.TYPE_STRING, description="message (e.g: internal server error)")
-            },
-        )
-    },
+    request_body=AuthSwaggerSchema.delete_signout_request_body,
+    responses=AuthSwaggerSchema.delete_signout_responses,
     deprecated=False
 )
 @api_view(["DELETE"])

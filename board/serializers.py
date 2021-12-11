@@ -14,7 +14,7 @@ class PostsSerializer(serializers.Serializer) :
         return Posts.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        instance.title = validated_data.get('content', instance.title)
+        instance.title = validated_data.get('title', instance.title)
         instance.content = validated_data.get('content', instance.content)
         instance.save()
         return instance

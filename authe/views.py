@@ -22,11 +22,11 @@ from config.swagger_config import AuthSwaggerSchema
     operation_description="sign up with email, password",
     method="post",
     manual_parameters=AuthSwaggerSchema.post_signup_manual_parameters,
-    responses=AuthSwaggerSchema.post_signup_manual_responses,
+    responses=AuthSwaggerSchema.post_signup_responses,
     deprecated=False
 )
-@api_view(["POST"])
-@parser_classes([FormParser])
+@api_view(["POST"]) # swagger를 위해 붙인 decorator
+@parser_classes([FormParser]) # swagger를 위해 붙인 decorator
 def signup(request):
     try:
         if request.method == "POST":

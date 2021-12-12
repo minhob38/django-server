@@ -4,6 +4,7 @@ from .models import SeoulSggs
 from .serializers import SeoulSggsSerializer
 from drf_yasg.utils import swagger_auto_schema
 from config.swagger_config import MapSwaggerSchema
+from django.http import JsonResponse
 
 
 class SggView(APIView):
@@ -31,7 +32,7 @@ class SggView(APIView):
                 )
             )
             data = {"status": "success", "message": "found sggs", "data": payload}
-            return Response(data, status=200, content_type="application/json")
+            return JsonResponse(data, status=200, content_type="application/json")
         except Exception as e:
             data = {"status": "error", "message": str(e)}
             return Response(data, status=500, content_type="application/json")

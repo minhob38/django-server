@@ -20,6 +20,7 @@ TODO:
 - serverless (gcp, aws)
 - test code
 - docker
+- streaming
 """
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -63,6 +64,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "config.middlewares.check_access_token_middleware",
+    "config.middlewares.CheckAccessTokenMiddleWare",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -156,6 +158,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 SWAGGER_SETTINGS = {
     "SECURITY_DEFINITIONS": {
-        "Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"}
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+            "scheme": "bearer",
+            "bearerFormat": "bearer",
+        }
     }
 }

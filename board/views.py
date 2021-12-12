@@ -1,7 +1,3 @@
-from django.shortcuts import render
-
-# Create your views here.
-from django import views
 from django.http import (
     HttpResponse,
     HttpResponseBadRequest,
@@ -44,6 +40,7 @@ class BoardView(APIView):  # mixed in으로 바꾸기
         전체 게시글을 조회합니다.
         """
         try:
+            print("!!!")
             serializer = PostsSerializer(Posts.objects.all(), many=True)
             data = {
                 "status": "success",
@@ -53,6 +50,7 @@ class BoardView(APIView):  # mixed in으로 바꾸기
             # https://docs.djangoproject.com/en/3.2/ref/request-response/#jsonresponse-objects
             return JsonResponse(data, status=200, content_type="application/json")
         except Exception as e:
+            print(e)
             data = {"status": "success", "message": str(e)}
             return JsonResponse(data, status=500, content_type="application/json")
 

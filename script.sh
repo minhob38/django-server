@@ -1,6 +1,7 @@
 source bin/activate
 deactive
 
+python manage.py test
 python manage.py makemigrations
 python manage.py runserver
 python manage.py migrate

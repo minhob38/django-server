@@ -97,6 +97,7 @@ project(config)의 router는 root이기 때문에, app과 관계없이 매번 ro
 """
 DATABASE_ROUTERS = ["config.router.Router"]
 
+# https://docs.djangoproject.com/en/3.2/ref/settings/#std:setting-DATABASES
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -109,6 +110,7 @@ DATABASES = {
         "PASSWORD": os.environ.get("POSTGRESQL_PASSWORD"),
         "HOST": os.environ.get("POSTGRESQL_HOST"),
         "PORT": os.environ.get("POSTGRESQL_PORT"),
+        "TEST": {"MIRROR": "postgresql"},
     },
 }
 
@@ -162,8 +164,6 @@ SWAGGER_SETTINGS = {
             "type": "apiKey",
             "name": "Authorization",
             "in": "header",
-            "scheme": "bearer",
-            "bearerFormat": "bearer",
         }
     }
 }

@@ -11,6 +11,13 @@ from drf_yasg import openapi
 from config.utils import create_token, create_hash, get_is_match_password
 from config.swagger_config import AuthSwaggerSchema
 
+"""
+TODO:
+- social signup / signin (google)
+- multi login
+- refresh token (redis)
+"""
+
 
 @csrf_exempt
 # @swaggger_auto_schema document

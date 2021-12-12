@@ -16,6 +16,12 @@ from rest_framework.response import Response
 from .serializers import PostsSerializer
 from config.swagger_config import BoardSwaggerSchema
 
+"""
+TODO:
+- file upload (gcp / local)
+- view template
+"""
+
 # 게시판 관리 (전체 조회 / 전체 삭제) - APIView 기반 CBV
 class BoardView(APIView):  # mixed in으로 바꾸기
     """

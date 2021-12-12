@@ -36,15 +36,5 @@ api 요청/응답은 swagger를 기반으로 문서화되어 있습니다.
 
 ## To Do
 
-- social signup / login
 - admin (settings.py)
-- view template (map)
-- refresh token (redis)
-- test code
-- docker
 - class middleware (map, response formatting)
-- serverless (gcp, aws)
-- 보안
-- socket 서버
-- 파일
-- multi login

@@ -1,24 +1,133 @@
-from django import views
-from django.http import HttpResponse
-from django.views import View
-import json
-from .models import SeoulSgg
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import SeoulSggSerializer
+from .models import SeoulSggs
+from .serializers import SeoulSggsSerializer
+from drf_yasg.utils import swagger_auto_schema
+from config.swagger_config import MapSwaggerSchema
 
 
-class MapView(APIView):
+class SggView(APIView):
+    @swagger_auto_schema(
+        tags=["map"],
+        operation_summary="find all sggs",
+        operation_description="find all sggs",
+        responses=MapSwaggerSchema.get_sggs_responses,
+        deprecated=False,
+    )
     def get(self, request):
-        seoul_sgg = SeoulSgg.objects.raw(
-            "SELECT gid, st_astext(geom) as geom_text FROM SEOUL_SGG"
-        )
-        serializer = SeoulSggSerializer(seoul_sgg, many=True)
+        try:
+            seoul_sggs = SeoulSggs.objects.raw(
+                "SELECT gid, st_astext(geom) as geom_text, st_astext(st_centroid(geom)) as center_point FROM seoul_sggs"
+            )
+            serializer = SeoulSggsSerializer(seoul_sggs, many=True)
+            payload = list(
+                map(
+                    lambda sgg: {
+                        "gid": sgg["gid"],
+                        "sgg_nm": sgg["sgg_nm"],
+                        "center_point": sgg["center_point"],
+                    },
+                    serializer.data,
+                )
+            )
+            data = {"status": "success", "message": "found sggs", "data": payload}
+            return Response(data, status=200, content_type="application/json")
+        except Exception as e:
+            data = {"status": "error", "message": str(e)}
+            return Response(data, status=500, content_type="application/json")
 
-        data = {
-            "status": "success",
-            "message": "found features",
-            "data": serializer.data,
-        }
 
-        return HttpResponse(json.dumps(data), content_type="application/json")
+class SggDetailView(APIView):
+    @swagger_auto_schema(
+        tags=["map"],
+        operation_summary="find sgg",
+        operation_description="find sgg with name",
+        manual_parameters=MapSwaggerSchema.get_sggs_path_manual_parameters,
+        responses=MapSwaggerSchema.get_sggs_path_responses,
+        deprecated=False,
+    )
+    def get(self, request, sgg_nm):
+        try:
+            # https://docs.djangoproject.com/ko/4.0/topics/db/sql/
+            sgg = SeoulSggs.objects.raw(
+                "SELECT gid, sgg_nm FROM seoul_sggs WHERE sgg_nm = %s", [sgg_nm]
+            )[0]
+            # print(dir(sgg))
+            payload = {"gid": sgg.gid, "sgg_nm": sgg.sgg_nm}
+            data = {"status": "success", "message": "found sgg", "data": payload}
+            return Response(data, status=200, content_type="application/json")
+        except Exception as e:
+            data = {"status": "error", "message": str(e)}
+            return Response(data, status=500, content_type="application/json")
+
+
+# 좌표변환 문제 해결한후, 로직 만들기
+class SggBoundView(APIView):
+    @swagger_auto_schema(
+        tags=["map"],
+        operation_summary="find sggs in bound",
+        operation_description="find sggs with bound",
+        manual_parameters=MapSwaggerSchema.get_sggs_query_manual_parameters,
+        responses=MapSwaggerSchema.get_sggs_query_responses,
+        deprecated=False,
+    )
+    def get(self, request):
+        try:
+            south = request.GET.get("south")
+            west = request.GET.get("west")
+            notrh = request.GET.get("north")
+            east = request.GET.get("east")
+
+            print(bool(request.GET))
+
+            linestring = f"'LINESTRING ({west} {south}, {east} {notrh})'"
+            print(linestring)
+            sgg = SeoulSggs.objects.raw(
+                "SELECT gid, sgg_nm FROM seoul_sggs WHERE st_intersect(geom::geometry, %s::geometry)",
+                [linestring],
+            )
+            data = {
+                "status": "success",
+                "message": "found sggs in bound",
+                "data": "payload",
+            }
+            return Response(data, status=200, content_type="application/json")
+        except Exception as e:
+            data = {"status": "error", "message": str(e)}
+            return Response(data, status=500, content_type="application/json")
+
+
+class SggAreaView(APIView):
+    @swagger_auto_schema(
+        tags=["map"],
+        operation_summary="find sggs' area",
+        operation_description="find sggs' area by descending order",
+        responses=MapSwaggerSchema.get_sggs_areas_responses,
+        deprecated=False,
+    )
+    def get(self, request):
+        try:
+            # st_area(geom) / 1000000 = km2
+            sggs = SeoulSggs.objects.raw(
+                "SELECT gid, sgg_nm, st_area(geom) / 1000000 as area FROM seoul_sggs order by area desc"
+            )
+            payload = list(
+                map(
+                    lambda sgg: {
+                        "gid": sgg.gid,
+                        "sgg_nm": sgg.sgg_nm,
+                        "area": sgg.area,
+                    },
+                    sggs,
+                )
+            )
+
+            data = {
+                "status": "success",
+                "message": "found sggs's area",
+                "data": payload,
+            }
+            return Response(data, status=200, content_type="application/json")
+        except Exception as e:
+            data = {"status": "error", "message": str(e)}
+            return Response(data, status=500, content_type="application/json")

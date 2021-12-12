@@ -417,3 +417,198 @@ class BoardSwaggerSchema:
             },
         ),
     }
+
+
+class MapSwaggerSchema:
+    get_sggs_responses = {
+        200: openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: success)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: found all sggs)",
+                ),
+                "data": openapi.Schema(
+                    type=openapi.TYPE_ARRAY,
+                    items=openapi.Schema(
+                        type=openapi.TYPE_OBJECT,
+                        properties={
+                            "gid": openapi.Schema(type=openapi.TYPE_NUMBER),
+                            "sgg_nm": openapi.Schema(type=openapi.TYPE_STRING),
+                            "center_point": openapi.Schema(type=openapi.TYPE_STRING),
+                        },
+                    ),
+                ),
+            },
+        ),
+        500: openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: error)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: internal server error)",
+                ),
+            },
+        ),
+    }
+
+    get_sggs_path_manual_parameters = [
+        openapi.Parameter(
+            "sgg_nm",
+            openapi.IN_PATH,
+            type=openapi.TYPE_STRING,
+            required=True,
+            default="송파구",
+            description="sgg name",
+        )
+    ]
+
+    get_sggs_path_responses = {
+        200: openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: success)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: found sgg)",
+                ),
+                "data": openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        "gid": openapi.Schema(type=openapi.TYPE_NUMBER),
+                        "sgg_nm": openapi.Schema(type=openapi.TYPE_STRING),
+                    },
+                ),
+            },
+        ),
+        500: openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: error)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: internal server error)",
+                ),
+            },
+        ),
+    }
+
+    get_sggs_query_manual_parameters = [
+        openapi.Parameter(
+            "south",
+            openapi.IN_QUERY,
+            type=openapi.TYPE_NUMBER,
+            required=True,
+            default="37.453121",
+            description="south latitude",
+        ),
+        openapi.Parameter(
+            "west",
+            openapi.IN_QUERY,
+            type=openapi.TYPE_NUMBER,
+            required=True,
+            default="127.0485376",
+            description="west longitude",
+        ),
+        openapi.Parameter(
+            "north",
+            openapi.IN_QUERY,
+            type=openapi.TYPE_NUMBER,
+            required=True,
+            default="37.5836935",
+            description="north latitude",
+        ),
+        openapi.Parameter(
+            "east",
+            openapi.IN_QUERY,
+            type=openapi.TYPE_NUMBER,
+            required=True,
+            default="127.1192621",
+            description="east longitude",
+        ),
+    ]
+
+    get_sggs_query_responses = {
+        200: openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: success)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: found sggs in bound)",
+                ),
+                "data": openapi.Schema(
+                    type=openapi.TYPE_ARRAY,
+                    items=openapi.Schema(
+                        type=openapi.TYPE_OBJECT,
+                        properties={
+                            "gid": openapi.Schema(type=openapi.TYPE_NUMBER),
+                            "sgg_nm": openapi.Schema(type=openapi.TYPE_STRING),
+                        },
+                    ),
+                ),
+            },
+        ),
+        500: openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: error)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: internal server error)",
+                ),
+            },
+        ),
+    }
+
+    get_sggs_areas_responses = {
+        200: openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: success)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: found sggs's area)",
+                ),
+                "data": openapi.Schema(
+                    type=openapi.TYPE_ARRAY,
+                    items=openapi.Schema(
+                        type=openapi.TYPE_OBJECT,
+                        properties={
+                            "gid": openapi.Schema(type=openapi.TYPE_NUMBER),
+                            "sgg_nm": openapi.Schema(type=openapi.TYPE_STRING),
+                            "area": openapi.Schema(type=openapi.TYPE_NUMBER),
+                        },
+                    ),
+                ),
+            },
+        ),
+        500: openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="status (e.g: error)"
+                ),
+                "message": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="message (e.g: internal server error)",
+                ),
+            },
+        ),
+    }

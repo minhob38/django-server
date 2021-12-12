@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class SeoulSgg(models.Model):
+class SeoulSggs(models.Model):
     gid = models.AutoField(primary_key=True)
     adm_sect_c = models.CharField(max_length=254, blank=True, null=True)
     sgg_nm = models.CharField(max_length=254, blank=True, null=True)
@@ -12,5 +12,5 @@ class SeoulSgg(models.Model):
 
     class Meta:
         managed = False
-        db_table = "seoul_sgg"
+        db_table = "seoul_sggs"
         app_label = "postgresql"

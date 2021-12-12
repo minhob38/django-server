@@ -11,6 +11,7 @@ from drf_yasg import openapi
 from config.utils import create_token, create_hash, get_is_match_password
 from config.swagger_config import AuthSwaggerSchema
 
+
 @csrf_exempt
 # @swaggger_auto_schema document
 # https://drf-yasg.readthedocs.io/en/stable/drf_yasg.html#drf_yasg.utils.swagger_auto_schema
@@ -23,10 +24,10 @@ from config.swagger_config import AuthSwaggerSchema
     method="post",
     manual_parameters=AuthSwaggerSchema.post_signup_manual_parameters,
     responses=AuthSwaggerSchema.post_signup_responses,
-    deprecated=False
+    deprecated=False,
 )
-@api_view(["POST"]) # swagger를 위해 붙인 decorator
-@parser_classes([FormParser]) # swagger를 위해 붙인 decorator
+@api_view(["POST"])  # swagger를 위해 붙인 decorator
+@parser_classes([FormParser])  # swagger를 위해 붙인 decorator
 def signup(request):
     try:
         if request.method == "POST":
@@ -35,8 +36,10 @@ def signup(request):
 
             is_user = User.objects.filter(email=email).exists()
             if is_user:
-                data = { "status": "error", "message": "user already exists" }
-                return HttpResponseBadRequest(json.dumps(data), content_type="application/json")
+                data = {"status": "error", "message": "user already exists"}
+                return HttpResponseBadRequest(
+                    json.dumps(data), content_type="application/json"
+                )
 
             hash = create_hash(password)
             user = User(email=email, password=hash, created_at=timezone.now())
@@ -47,12 +50,15 @@ def signup(request):
             data = {
                 "status": "success",
                 "message": "user signed up",
-                "access_token": access_token
+                "access_token": access_token,
             }
             return HttpResponse(json.dumps(data), content_type="application/json")
     except Exception as e:
-        data = { "status": "error", "message": str(e) }
-        return HttpResponseServerError(json.dumps(data), content_type="application/json")
+        data = {"status": "error", "message": str(e)}
+        return HttpResponseServerError(
+            json.dumps(data), content_type="application/json"
+        )
+
 
 @csrf_exempt
 @swagger_auto_schema(
@@ -60,42 +66,49 @@ def signup(request):
     operation_summary="sign in",
     operation_description="sign in with email, password",
     method="post",
-    request_body=AuthSwaggerSchema.post_signin_request_body,
+    manual_parameters=AuthSwaggerSchema.post_signin_manual_parameters,
     responses=AuthSwaggerSchema.post_signin_responses,
-    deprecated=False
+    deprecated=False,
 )
 @api_view(["POST"])
+@parser_classes([FormParser])
 def signin(request):
     try:
         if request.method == "POST":
-            body = json.loads(request.body)
-            email = body["email"]
-            password = body["password"]
+            email = request.POST["email"]
+            password = request.POST["password"]
 
             user = User.objects.filter(email=email)
             is_user = user.exists()
 
             if not is_user:
-                data = { "status": "error", "message": "user does not exist" }
-                return HttpResponseBadRequest(json.dumps(data), content_type="application/json")
+                data = {"status": "error", "message": "user does not exist"}
+                return HttpResponseBadRequest(
+                    json.dumps(data), content_type="application/json"
+                )
 
             hashed = user.values("password").first()["password"]
             is_match = get_is_match_password(password, hashed)
             if not is_match:
-                data = { "status": "error", "message": "password is invalid" }
-                return HttpResponseBadRequest(json.dumps(data), content_type="application/json")
+                data = {"status": "error", "message": "password is invalid"}
+                return HttpResponseBadRequest(
+                    json.dumps(data), content_type="application/json"
+                )
 
             access_token = create_token(email)
 
             data = {
                 "status": "success",
                 "message": "user signed in",
-                "access_token": access_token
+                "access_token": access_token,
             }
             return HttpResponse(json.dumps(data), content_type="application/json")
     except Exception as e:
-        data = { "status": "error", "message": str(e) }
-        return HttpResponseServerError(json.dumps(data), content_type="application/json")
+        data = {"status": "error", "message": str(e)}
+        return HttpResponseServerError(
+            json.dumps(data), content_type="application/json"
+        )
+
 
 @swagger_auto_schema(
     method="get",
@@ -103,7 +116,7 @@ def signin(request):
     operation_description="find all users' email and created_at",
     tags=["auth"],
     responses=AuthSwaggerSchema.get_users_responses,
-    deprecated=False
+    deprecated=False,
 )
 @api_view(["GET"])
 def users(request):
@@ -113,26 +126,36 @@ def users(request):
             if case == 1:
                 # queryest -> json #1
                 users = json.loads(serializers.serialize("json", User.objects.all()))
-                data = {"status": "success", "message": "found users",  "data": users}
+                data = {"status": "success", "message": "found users", "data": users}
                 return HttpResponse(json.dumps(data), content_type="application/json")
             elif case == 2:
                 # queryest -> json #2
                 # values document
                 # https://docs.djangoproject.com/en/3.2/ref/models/querysets/#values
                 users = User.objects.all().values("email")
-                data = { "status": "success", "message": "found users",  "data": list(users) }
+                data = {
+                    "status": "success",
+                    "message": "found users",
+                    "data": list(users),
+                }
                 return HttpResponse(json.dumps(data), content_type="application/json")
             else:
                 # queryest -> json #3
-                users = [{
-                    "email": user["email"],
-                    "created_at": user["created_at"].strftime("%Y-%m-%d")
-                } for user in User.objects.all().values()]
-                data = { "status": "success", "message": "found users",  "data": users }
+                users = [
+                    {
+                        "email": user["email"],
+                        "created_at": user["created_at"].strftime("%Y-%m-%d"),
+                    }
+                    for user in User.objects.all().values()
+                ]
+                data = {"status": "success", "message": "found users", "data": users}
                 return HttpResponse(json.dumps(data), content_type="application/json")
     except Exception as e:
-        data = { "status": "error", "message": str(e) }
-        return HttpResponseServerError(json.dumps(data), content_type="application/json")
+        data = {"status": "error", "message": str(e)}
+        return HttpResponseServerError(
+            json.dumps(data), content_type="application/json"
+        )
+
 
 @csrf_exempt
 @swagger_auto_schema(
@@ -142,7 +165,7 @@ def users(request):
     method="patch",
     request_body=AuthSwaggerSchema.patch_password_request_body,
     responses=AuthSwaggerSchema.patch_password_responses,
-    deprecated=False
+    deprecated=False,
 )
 @api_view(["PATCH"])
 def password(request):
@@ -157,20 +180,26 @@ def password(request):
             user = User.objects.filter(email=email)
             is_user = user.exists()
             if not is_user:
-                data = { "status": "error", "message": "user does not exist" }
-                return HttpResponseBadRequest(json.dumps(data), content_type="application/json")
+                data = {"status": "error", "message": "user does not exist"}
+                return HttpResponseBadRequest(
+                    json.dumps(data), content_type="application/json"
+                )
 
             hashed = user.values("password").first()["password"]
             is_match = get_is_match_password(current_password, hashed)
             if not is_match:
-                data = { "status": "error", "message": "password is invalid" }
-                return HttpResponseBadRequest(json.dumps(data), content_type="application/json")
+                data = {"status": "error", "message": "password is invalid"}
+                return HttpResponseBadRequest(
+                    json.dumps(data), content_type="application/json"
+                )
 
             hashed = user.values("password").first()["password"]
             is_match = get_is_match_password(new_password, hashed)
             if is_match:
-                data = { "status": "error", "message": "password is same" }
-                return HttpResponseBadRequest(json.dumps(data), content_type="application/json")
+                data = {"status": "error", "message": "password is same"}
+                return HttpResponseBadRequest(
+                    json.dumps(data), content_type="application/json"
+                )
 
             hash = create_hash(new_password)
 
@@ -184,8 +213,11 @@ def password(request):
             }
             return HttpResponse(json.dumps(data), content_type="application/json")
     except Exception as e:
-        data = { "status": "error", "message": str(e) }
-        return HttpResponseServerError(json.dumps(data), content_type="application/json")
+        data = {"status": "error", "message": str(e)}
+        return HttpResponseServerError(
+            json.dumps(data), content_type="application/json"
+        )
+
 
 @csrf_exempt
 @swagger_auto_schema(
@@ -195,7 +227,7 @@ def password(request):
     method="delete",
     request_body=AuthSwaggerSchema.delete_signout_request_body,
     responses=AuthSwaggerSchema.delete_signout_responses,
-    deprecated=False
+    deprecated=False,
 )
 @api_view(["DELETE"])
 def signout(request):
@@ -209,14 +241,18 @@ def signout(request):
             user = User.objects.filter(email=email)
             is_user = user.exists()
             if not is_user:
-                data = { "status": "error", "message": "user does not exist" }
-                return HttpResponseBadRequest(json.dumps(data), content_type="application/json")
+                data = {"status": "error", "message": "user does not exist"}
+                return HttpResponseBadRequest(
+                    json.dumps(data), content_type="application/json"
+                )
 
             hashed = user.values("password").first()["password"]
             is_match = get_is_match_password(password, hashed)
             if not is_match:
-                data = { "status": "error", "message": "password is invalid" }
-                return HttpResponseBadRequest(json.dumps(data), content_type="application/json")
+                data = {"status": "error", "message": "password is invalid"}
+                return HttpResponseBadRequest(
+                    json.dumps(data), content_type="application/json"
+                )
 
             user = User.objects.get(email=email)
             user.delete()
@@ -227,5 +263,7 @@ def signout(request):
             }
             return HttpResponse(json.dumps(data), content_type="application/json")
     except Exception as e:
-        data = { "status": "error", "message": str(e) }
-        return HttpResponseServerError(json.dumps(data), content_type="application/json")
+        data = {"status": "error", "message": str(e)}
+        return HttpResponseServerError(
+            json.dumps(data), content_type="application/json"
+        )

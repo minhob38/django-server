@@ -62,24 +62,24 @@ class AuthSwaggerSchema:
         ),
     }
 
-    post_signin_request_body = openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-        require=["email", "password"],
-        properties={
-            "email": openapi.Schema(
-                type=openapi.TYPE_STRING,
-                require=True,
-                default="abcde@gmail.com",
-                description="email",
-            ),
-            "password": openapi.Schema(
-                type=openapi.TYPE_STRING,
-                require=True,
-                default="qwerasdf",
-                description="password",
-            ),
-        },
-    )
+    post_signin_manual_parameters = [
+        openapi.Parameter(
+            "email",
+            openapi.IN_FORM,
+            type=openapi.TYPE_STRING,
+            required=True,
+            default="abcde@gmail.com",
+            description="email",
+        ),
+        openapi.Parameter(
+            "password",
+            openapi.IN_FORM,
+            type=openapi.TYPE_STRING,
+            required=True,
+            default="qwerasdf",
+            description="password",
+        ),
+    ]
 
     post_signin_responses = {
         200: openapi.Response(

@@ -19,7 +19,7 @@ TODO:
 """
 
 # 게시판 관리 (전체 조회 / 전체 삭제) - APIView 기반 CBV
-class BoardView(APIView):  # mixed in으로 바꾸기
+class BoardView(APIView):
     """
     게시판 관리
     ---
@@ -40,7 +40,6 @@ class BoardView(APIView):  # mixed in으로 바꾸기
         전체 게시글을 조회합니다.
         """
         try:
-            print("!!!")
             serializer = PostsSerializer(Posts.objects.all(), many=True)
             data = {
                 "status": "success",
@@ -214,4 +213,4 @@ class PostView(APIView):
             return Response(data, status=500, content_type="application/json")
 
 
-# mixin / genetic / viewset
+# mixin / generic / viewset

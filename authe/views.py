@@ -7,12 +7,12 @@ import json
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import FormParser
 from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
 from config.utils import create_token, create_hash, get_is_match_password
 from config.swagger_config import AuthSwaggerSchema
 
 """
 TODO:
+- signup / signin / signout template 만들기 (GET으로 html 응답)
 - social signup / signin (google)
 - multi login
 - refresh token (redis)

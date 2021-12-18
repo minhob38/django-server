@@ -1,0 +1,21 @@
+.current {
+  font: normal bold 20px sans-serif;
+}
+
+#greeting-button {
+  display: block;
+  all: unset;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 3rem;
+  border: 3px solid black;
+  border-radius: 15px;
+  font: normal bold 20px sans-serif;
+}
+ß
+#greeting-button:hover {
+  background-color: gray;
+  color: white;
+}

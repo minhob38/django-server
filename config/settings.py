@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "authe",
     "map",
     "board",
+    "page",
 ]
 
 MIDDLEWARE = [
@@ -72,7 +73,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "page/templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -148,10 +149,10 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
+# 정적 파일 관리하기 document
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
-
-STATIC_URL = "/static/"
+STATIC_URL = "/static/"  # static file들을 숨기기 위해 url을 변경
+STATICFILES_DIRS = [BASE_DIR / "page/statics"]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

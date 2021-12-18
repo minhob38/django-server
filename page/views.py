@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 from datetime import datetime
+from django.contrib import messages
 
 
 class HomeView(View):
@@ -23,5 +24,12 @@ class HomeView(View):
                 "second": cur_second,
             }
         }
+
+        # django message document
+        # https://docs.djangoproject.com/en/4.0/ref/contrib/messages/
+        messages.add_message(request, messages.SUCCESS, "success 메세지입니다. ^___^")
+        messages.info(request, "info 메세지입니다. : )")
+        messages.warning(request, "warning 메세지입니다. : )")
+        messages.error(request, "error 메세지입니다. : )")
 
         return render(request, "home/home.html", context)

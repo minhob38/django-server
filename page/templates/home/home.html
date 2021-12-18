@@ -17,6 +17,15 @@
     <span>27분</span>
     <span>30초</span>
     <button id="greeting-button">Greeting</button>
+    <div id=message-box>
+      <div id="message">message들 입니다...</div>
+        {% if messages %}
+	        {% for message in messages %}
+		        {{ message.tags }}
+		        {{ message.message }}
+	        {% endfor %}
+        {% endif %}
+    </div>
     <script src="{% static 'scripts/home.js' %}"></script>
   </body>
 </html>

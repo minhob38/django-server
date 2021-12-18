@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
-    "django.contrib.messages",
+    "django.contrib.messages",  # https://docs.djangoproject.com/en/4.0/ref/contrib/messages/
     "django.contrib.staticfiles",
     "rest_framework",
     "drf_yasg",

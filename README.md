@@ -4,7 +4,7 @@
 
 ## API
 
-본서버는 인증 API `api/auth`와 지도 API `api/map`으로 이루어져 있습니다.
+본서버는 인증 API `api/auth`, 게시판 API `api/board`, 지도 API `api/map`으로 이루어져 있습니다.
 
 ### • auth api
 
@@ -15,15 +15,15 @@
 ### • board api
 
 게시판 API이며 아래 stack으로 만들어져 있습니다.  
-\- class based view
+\- class based view  
 \- django rest framework
-\- class middleware
 
 ### • map api
 
 지도 API이며 아래 stack으로 만들어져 있습니다.  
-\- class based view
-\- django rest framework
+\- class based view  
+\- django rest framework  
+\- class middleware  
 \- postgis (raw sql)
 
 ### 📔 API Document

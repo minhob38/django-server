@@ -1,5 +1,5 @@
 from django.urls import path
-from map.views import SggView, SggDetailView, SggBoundView, SggAreaView
+from .views import SggView, SggDetailView, SggBoundView, SggAreaView
 
 urlpatterns = [
     path("sggs", SggBoundView.as_view()),

@@ -52,9 +52,9 @@ urlpatterns = [
     # admin route
     path("admin/", admin.site.urls),
     # page route
-    path("", include("page.urls")),
+    path("", include("apps.page.urls")),
     # api route
-    path("api/auth/", include("authe.urls")),
-    path("api/map/", include("map.urls")),
-    path("api/board/", include("board.urls")),
+    path("api/auth/", include("apps.authe.urls")),
+    path("api/map/", include("apps.map.urls")),
+    path("api/board/", include("apps.board.urls")),
 ]

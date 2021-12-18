@@ -32,4 +32,4 @@ class HomeView(View):
         messages.warning(request, "warning 메세지입니다. : )")
         messages.error(request, "error 메세지입니다. : )")
 
-        return render(request, "home/home.html", context)
+        return render(request, "home.html", context)

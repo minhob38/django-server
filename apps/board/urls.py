@@ -1,5 +1,5 @@
 from django.urls import path
-from board.views import BoardView, PostView
+from .views import BoardView, PostView
 
 urlpatterns = [
     path("posts/", BoardView.as_view()),

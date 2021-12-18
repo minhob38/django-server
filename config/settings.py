@@ -50,10 +50,10 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "drf_yasg",
-    "authe",
-    "map",
-    "board",
-    "page",
+    "apps.authe",
+    "apps.map",
+    "apps.board",
+    "apps.page",
 ]
 
 MIDDLEWARE = [
@@ -73,7 +73,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "page/templates"],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -152,7 +152,7 @@ USE_TZ = True
 # 정적 파일 관리하기 document
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 STATIC_URL = "/static/"  # static file들을 숨기기 위해 url을 변경
-STATICFILES_DIRS = [BASE_DIR / "page/statics"]
+STATICFILES_DIRS = [BASE_DIR / "statics"]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

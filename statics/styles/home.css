@@ -25,7 +25,8 @@
   border-radius: 15px;
   font: normal bold 20px sans-serif;
 }
-ß #greeting-button:hover {
+
+#greeting-button:hover {
   background-color: gray;
   color: white;
 }

@@ -58,7 +58,7 @@ class BoardView(APIView):
         operation_summary="create post",
         operation_description="create post with author, title, content",
         request_body=PostsSerializer,  # serializer 사용하면, manual_parameter의 form 정의하면 에러 발생
-        responses=BoardSwaggerSchema.get_posts_responses,
+        responses=BoardSwaggerSchema.get_posts_responses, # TODO: swagger 수정
         deprecated=False,
     )
     def post(self, request):

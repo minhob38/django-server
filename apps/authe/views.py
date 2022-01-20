@@ -200,6 +200,7 @@ def password(request):
                     json.dumps(data), content_type="application/json"
                 )
 
+            # TODO: current_password == new_password 조건으로 수정
             hashed = user.values("password").first()["password"]
             is_match = get_is_match_password(new_password, hashed)
             if is_match:

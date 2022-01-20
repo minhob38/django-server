@@ -106,11 +106,11 @@ DATABASES = {
     },
     "postgresql": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("POSTGRESQL_NAME"),
-        "USER": os.environ.get("POSTGRESQL_USER"),
-        "PASSWORD": os.environ.get("POSTGRESQL_PASSWORD"),
-        "HOST": os.environ.get("POSTGRESQL_HOST"),
-        "PORT": os.environ.get("POSTGRESQL_PORT"),
+        "NAME": os.environ.get("DOCKER_DB_NAME"),
+        "USER": os.environ.get("DOCKER_DB_USER"),
+        "PASSWORD": os.environ.get("DOCKER_DB_PASSWORD"),
+        "HOST": os.environ.get("DOCKER_DB_HOST"),
+        "PORT": os.environ.get("DOCKER_DB_PORT"),
         "TEST": {"MIRROR": "postgresql"},
     },
 }

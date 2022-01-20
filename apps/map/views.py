@@ -97,7 +97,7 @@ class SggBoundView(APIView):
             data = {"status": "error", "message": str(e)}
             return Response(data, status=500, content_type="application/json")
 
-
+# 면적 km2으로 바꾸기
 class SggAreaView(APIView):
     @swagger_auto_schema(
         tags=["map"],

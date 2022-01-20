@@ -2,6 +2,57 @@
 
 기본적인 구조를 갖춘 django server입니다.
 
+## 환경설정
+
+### • 설치
+
+**\- 저장소 받기**
+받고싶은 경로에 github repository를 받습니다.
+
+```sh
+$ git clone https://github.com/minhob38/django-server.git [받을 경로]
+```
+
+**\- 가상환경 만들기**
+
+받은경로에서 아래 스크립트를 실행하여, python 가상환경을 만듭니다.
+
+```sh
+$ python -m venv .
+```
+
+가상환경 `source bin/activate`으로 활성화하고, `deactive`로 비활성화합니다.
+
+**\- package 설치하기**
+
+가상환경을 활성화한 뒤, 아래 스크립트를 실행하여 `requirements.txt`에 정의된 package들을 설치합니다.
+
+```sh
+$ pip install -r requirements.txt
+```
+
+### • 실행
+
+```sh
+
+
+```
+
+**\- database 올리기**
+
+아래 스크립트로 database(postgresql)의 docker container를 올립니다.
+
+```sh
+$ python script.py docker:db-up
+```
+
+**\- server 실행하기**
+아래 스크립트로 django server를 실행시킵니다.
+
+```sh
+$ python manage.py runserver
+```
+
 ## API
 
 본서버는 인증 API `api/auth`, 게시판 API `api/board`, 지도 API `api/map`으로 이루어져 있습니다.

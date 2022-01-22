@@ -84,4 +84,4 @@ api 요청/응답은 swagger를 기반으로 문서화되어 있습니다.
 
 본서버는 database로 db.sqlite3, postgresql(+postgis)를 사용합니다.
 
-## CI / CD
+<!-- ## CI / CD -->

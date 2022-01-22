@@ -53,7 +53,6 @@ class SggDetailView(APIView):
             sgg = SeoulSggs.objects.raw(
                 "SELECT gid, sgg_nm FROM seoul_sggs WHERE sgg_nm = %s", [sgg_nm]
             )[0]
-            # print(dir(sgg))
             payload = {"gid": sgg.gid, "sgg_nm": sgg.sgg_nm}
             data = {"status": "success", "message": "found sgg", "data": payload}
             return Response(data, status=200, content_type="application/json")
@@ -62,7 +61,6 @@ class SggDetailView(APIView):
             return Response(data, status=500, content_type="application/json")
 
 
-# 좌표변환 문제 해결한후, 로직 만들기
 class SggBoundView(APIView):
     @swagger_auto_schema(
         tags=["map"],
@@ -79,18 +77,26 @@ class SggBoundView(APIView):
             notrh = request.GET.get("north")
             east = request.GET.get("east")
 
-            print(bool(request.GET))
+            linestring = f"SRID=4326;LINESTRING({west} {south}, {east} {notrh})"
 
-            linestring = f"'LINESTRING ({west} {south}, {east} {notrh})'"
-            print(linestring)
-            sgg = SeoulSggs.objects.raw(
-                "SELECT gid, sgg_nm FROM seoul_sggs WHERE st_intersect(geom::geometry, %s::geometry)",
-                [linestring],
+            sggs = SeoulSggs.objects.raw(
+                "SELECT gid, sgg_nm FROM seoul_sggs WHERE st_intersects(geom::geometry, %s::geometry)",
+                [linestring]
             )
+            payload = list(
+                map(
+                    lambda sgg: {
+                        "gid": sgg.gid,
+                        "sgg_nm": sgg.sgg_nm,
+                    },
+                    sggs
+                )
+            )
+
             data = {
                 "status": "success",
                 "message": "found sggs in bound",
-                "data": "payload",
+                "data": payload
             }
             return Response(data, status=200, content_type="application/json")
         except Exception as e:

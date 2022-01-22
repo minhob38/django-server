@@ -41,7 +41,7 @@ def check_access_token_middleware(get_response):
 
 # class middleware
 class CheckAccessTokenMiddleWare:
-    PATH = (re.compile(r"^/api/map/sggs/$"), re.compile(r"^/api/map/sggs/"))
+    PATH = (re.compile(r"^/api/map/sggs/$"), re.compile(r"^/api/map/sggs"))
 
     def __init__(self, get_response):
         self.get_response = get_response

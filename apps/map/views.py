@@ -103,7 +103,6 @@ class SggBoundView(APIView):
             data = {"status": "error", "message": str(e)}
             return Response(data, status=500, content_type="application/json")
 
-# 면적 km2으로 바꾸기
 class SggAreaView(APIView):
     @swagger_auto_schema(
         tags=["map"],
@@ -114,9 +113,8 @@ class SggAreaView(APIView):
     )
     def get(self, request):
         try:
-            # st_area(geom) / 1000000 = km2
             sggs = SeoulSggs.objects.raw(
-                "SELECT gid, sgg_nm, st_area(geom) / 1000000 as area FROM seoul_sggs order by area desc"
+                "SELECT gid, sgg_nm, st_area(geom) / 1000000 area FROM (select gid, sgg_nm, st_transform(st_setsrid(geom, 4326), 5179) geom from seoul_sggs) km order by area desc"
             )
             payload = list(
                 map(

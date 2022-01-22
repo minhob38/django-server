@@ -29,6 +29,13 @@ $ python -m venv .
 $ pip install -r requirements.txt
 ```
 
+**\- db 설정하기**  
+아래 스크립트를 실행하여 `INSTALLED_APPS`에 정의된 app들의 database들을 설정합니다.
+
+```sh
+$ python manage.py migrate
+```
+
 ### • 실행
 
 **\- database 올리기**  
@@ -39,10 +46,10 @@ $ python script.py docker:db-up
 ```
 
 **\- server 실행하기**  
-아래 스크립트로 django server를 실행시킵니다.
+아래 스크립트로 django server를 실행시킵니다. (port번호를 지정하지않으면 port 8000에서 실행됩니다.)
 
 ```sh
-$ python manage.py runserver
+$ python manage.py runserver [port 번호]
 ```
 
 ## API

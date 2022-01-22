@@ -1,0 +1,12 @@
+version: "3.0"
+services:
+  django-server:
+    # image: django-server:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: django-server
+    volumes:
+      - ./.env:/usr/app/.env
+    ports:
+      - "8000:8000"
